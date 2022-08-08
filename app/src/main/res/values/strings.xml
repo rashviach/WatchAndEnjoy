@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">WatchAndEnjoy</string>
+    <string name="an_image_downloaded_by_glide">An image downloaded by Glide</string>
+</resources>
