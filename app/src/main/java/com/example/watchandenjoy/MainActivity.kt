@@ -1,5 +1,7 @@
 package com.example.watchandenjoy
 
+import android.content.Intent
+import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
@@ -9,9 +11,15 @@ import com.example.watchandenjoy.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private val mainViewBinding: ActivityMainBinding by viewBinding()
     private val imageList: ArrayList<String> = arrayListOf()
+    lateinit var receiver: InternetConnectionReceiver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        receiver = InternetConnectionReceiver()
+        IntentFilter(Intent.ACTION_MANAGE_NETWORK_USAGE).also{ //@todo Intent.Action
+            registerReceiver(receiver, it)
+        }
+
         imageList.addAll(
             arrayOf(
                 "https://i.pinimg.com/474x/5c/91/20/5c9120ee6ad07954705978dc2a989105.jpg",
@@ -42,5 +50,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             rv.layoutManager = GridLayoutManager(applicationContext, 2)
             rv.adapter = RecyclerAdapter(applicationContext, imageList)
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unregisterReceiver(receiver)
     }
 }

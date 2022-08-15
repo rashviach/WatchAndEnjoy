@@ -20,13 +20,16 @@ class RecyclerAdapter(
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+        // 1
         val pos = if (position >= imageURLList.size) position % imageURLList.size else position
         val imageUrl = imageURLList[pos]
         val iv = viewHolder.itemView.findViewById<ImageView>(R.id.iv)
         Glide.with(context)
             .load(imageUrl)
+            .placeholder(R.mipmap.autorenew)
             .skipMemoryCache(true)
             .into(iv)
+        TODO("if no internet then show toast on 1")
     }
 
     override fun getItemCount(): Int {
