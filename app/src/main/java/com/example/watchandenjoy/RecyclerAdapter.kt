@@ -31,9 +31,7 @@ class RecyclerAdapter(
                 .load(imageUrl)
                 .skipMemoryCache(true)
                 .into(iv)
-        } else
-            Toast.makeText(context, "No internet - cannot download images", Toast.LENGTH_LONG)
-                .show()
+        }
     }
 
     fun isOnline(): Boolean {
