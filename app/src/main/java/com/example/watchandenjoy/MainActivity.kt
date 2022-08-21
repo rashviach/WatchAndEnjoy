@@ -1,9 +1,9 @@
 package com.example.watchandenjoy
 
-import android.content.Intent
-import android.content.IntentFilter
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.watchandenjoy.databinding.ActivityMainBinding
@@ -11,14 +11,9 @@ import com.example.watchandenjoy.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private val mainViewBinding: ActivityMainBinding by viewBinding()
     private val imageList: ArrayList<String> = arrayListOf()
-    lateinit var receiver: InternetConnectionReceiver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        receiver = InternetConnectionReceiver()
-        IntentFilter(Intent.ACTION_MANAGE_NETWORK_USAGE).also{ //@todo Intent.Action
-            registerReceiver(receiver, it)
-        }
 
         imageList.addAll(
             arrayOf(
@@ -48,12 +43,36 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
         with(mainViewBinding) {
             rv.layoutManager = GridLayoutManager(applicationContext, 2)
-            rv.adapter = RecyclerAdapter(applicationContext, imageList)
-        }
-    }
+            val adapter = RecyclerAdapter(applicationContext, imageList)
+            rv.adapter = adapter
 
-    override fun onStop() {
-        super.onStop()
-        unregisterReceiver(receiver)
+            if (adapter.isOnline()) {
+                rv.visibility = View.VISIBLE
+                btnRetry.visibility = View.GONE
+            } else {
+                Toast.makeText(
+                    applicationContext,
+                    "No internet - cannot download images",
+                    Toast.LENGTH_LONG
+                ).show()
+                rv.visibility = View.GONE
+                btnRetry.visibility = View.VISIBLE
+            }
+
+            btnRetry.setOnClickListener {
+                if (adapter.isOnline()) {
+                    rv.visibility = View.VISIBLE
+                    btnRetry.visibility = View.GONE
+                } else {
+                    Toast.makeText(
+                        applicationContext,
+                        "No internet - cannot download images",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    rv.visibility = View.GONE
+                    btnRetry.visibility = View.VISIBLE
+                }
+            }
+        }
     }
 }
